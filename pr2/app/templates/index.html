@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Детекція обʼєктів</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 3rem auto; padding: 0 1rem; }
+    form { display: flex; gap: .5rem; align-items: center; margin: 1.5rem 0; flex-wrap: wrap; }
+    button { padding: .5rem 1rem; font-size: 1rem; cursor: pointer; }
+    #result { min-height: 3rem; white-space: pre-wrap; margin-top: 1rem; }
+    .error { color: #b00020; }
+    .summary { font-weight: bold; margin-bottom: 0.5rem; }
+    ul { padding-left: 1.2rem; }
+  </style>
+</head>
+<body>
+  <h1>Детекція обʼєктів</h1>
+
+  <form id="detect-form">
+    <input id="file" type="file" name="file" accept="image/*" required>
+    
+    <label for="conf">Confidence:</label>
+    <input id="conf" type="number" step="0.05" min="0.05" max="1.0" value="0.25" style="width: 4rem;">
+    
+    <button type="submit">Знайти обʼєкти</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    const form = document.getElementById('detect-form');
+    const result = document.getElementById('result');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const fileInput = document.getElementById('file');
+      const confInput = document.getElementById('conf');
+      
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      const data = new FormData();
+      data.append('file', file);
+      data.append('conf_threshold', confInput.value);
+
+      result.className = '';
+      result.textContent = 'Обробка…';
+
+      try {
+        const response = await fetch('/api/detect', { method: 'POST', body: data });
+        const payload = await response.json();
+
+        if (!response.ok) {
+          result.className = 'error';
+          result.textContent = 'Помилка: ' + (payload.detail || JSON.stringify(payload));
+          return;
+        }
+
+        let html = `<div class="summary">Знайдено об'єктів: ${payload.count} | Час: ${payload.inference_time_ms} ms</div>`;
+        
+        if (payload.objects && payload.objects.length > 0) {
+          html += '<ul>';
+          payload.objects.forEach(obj => {
+            const confPercent = (obj.confidence * 100).toFixed(1);
+            const bboxStr = obj.bbox.join(', ');
+            html += `<li><b>${obj.class}</b> — ${confPercent}% (bbox: [${bboxStr}])</li>`;
+          });
+          html += '</ul>';
+        } else {
+          html += "<p>Об'єктів не знайдено на даному порозі confidence.</p>";
+        }
+
+        result.innerHTML = html;
+      } catch (error) {
+        result.className = 'error';
+        result.textContent = 'Не вдалося звернутися до сервера.';
+      }
+    });
+  </script>
+</body>
+</html>
