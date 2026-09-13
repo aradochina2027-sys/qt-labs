@@ -27,3 +27,6 @@ pr2/eval/expected.json
 *.swp
 .DS_Store
 Thumbs.db
+
+.env
+*.env
