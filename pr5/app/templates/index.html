@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Пошук у базі знань — ПР5</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+
+            font-family: Arial, sans-serif;
+
+            background: #0f1115;
+            color: #f5f5f5;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1250px;
+
+            margin: 0 auto;
+            padding: 35px 20px 60px;
+        }
+
+        h1 {
+            margin: 0 0 10px;
+
+            font-size: 32px;
+        }
+
+        .subtitle {
+            margin-bottom: 25px;
+
+            color: #b8b8b8;
+
+            font-size: 17px;
+            line-height: 1.5;
+        }
+
+        /* -------------------- */
+        /* Статус індексу       */
+        /* -------------------- */
+
+        .status {
+            margin-bottom: 25px;
+            padding: 14px 18px;
+
+            border-radius: 10px;
+
+            font-size: 15px;
+        }
+
+        .status-loading {
+            background: #272727;
+            border: 1px solid #555;
+        }
+
+        .status-ok {
+            background: #122d1b;
+            border: 1px solid #2d8a4b;
+
+            color: #9ee5b5;
+        }
+
+        .status-error {
+            background: #351515;
+            border: 1px solid #b83b3b;
+
+            color: #ff9c9c;
+        }
+
+        /* -------------------- */
+        /* Панель пошуку        */
+        /* -------------------- */
+
+        .search-panel {
+            padding: 22px;
+
+            background: #17191f;
+
+            border: 1px solid #30333b;
+            border-radius: 14px;
+
+            margin-bottom: 30px;
+        }
+
+        .search-row {
+            display: flex;
+            gap: 12px;
+
+            margin-bottom: 18px;
+        }
+
+        #query {
+            flex: 1;
+
+            min-width: 0;
+
+            padding: 14px 16px;
+
+            border: 1px solid #555;
+            border-radius: 9px;
+
+            background: #303238;
+            color: white;
+
+            font-size: 17px;
+
+            outline: none;
+        }
+
+        #query:focus {
+            border-color: #4d7cff;
+        }
+
+        #searchButton {
+            min-width: 125px;
+
+            padding: 12px 22px;
+
+            border: none;
+            border-radius: 9px;
+
+            background: #3467eb;
+            color: white;
+
+            font-size: 16px;
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        #searchButton:hover {
+            background: #4778f1;
+        }
+
+        #searchButton:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* -------------------- */
+        /* Налаштування         */
+        /* -------------------- */
+
+        .settings {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 16px 22px;
+
+            align-items: end;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+
+            gap: 7px;
+        }
+
+        .field label {
+            color: #c9c9c9;
+
+            font-size: 14px;
+        }
+
+        select,
+        input[type="number"] {
+            min-width: 150px;
+
+            padding: 10px 12px;
+
+            border: 1px solid #4c4f57;
+            border-radius: 8px;
+
+            background: #303238;
+            color: white;
+
+            font-size: 15px;
+
+            outline: none;
+        }
+
+        .small-input {
+            min-width: 90px !important;
+            width: 100px;
+        }
+
+        /* -------------------- */
+        /* Результати           */
+        /* -------------------- */
+
+        .results-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 25px;
+        }
+
+        .result-column {
+            min-width: 0;
+        }
+
+        .result-column h2 {
+            margin-top: 0;
+
+            font-size: 22px;
+        }
+
+        .time {
+            margin: -8px 0 15px;
+
+            color: #999;
+
+            font-size: 13px;
+        }
+
+        .result-card {
+            margin-bottom: 15px;
+            padding: 17px;
+
+            background: #181a20;
+
+            border: 1px solid #343740;
+            border-radius: 11px;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+
+            gap: 10px;
+
+            margin-bottom: 10px;
+        }
+
+        .source {
+            color: #85a9ff;
+
+            font-weight: bold;
+
+            word-break: break-word;
+        }
+
+        .score {
+            white-space: nowrap;
+
+            color: #8ee6a4;
+
+            font-weight: bold;
+        }
+
+        .metadata {
+            display: flex;
+            flex-wrap: wrap;
+
+            gap: 6px;
+
+            margin-bottom: 12px;
+        }
+
+        .tag {
+            padding: 4px 7px;
+
+            border-radius: 6px;
+
+            background: #292c34;
+            color: #c9c9c9;
+
+            font-size: 12px;
+        }
+
+        .text {
+            color: #dedede;
+
+            font-size: 14px;
+            line-height: 1.55;
+
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .empty {
+            padding: 20px;
+
+            border: 1px dashed #555;
+            border-radius: 10px;
+
+            color: #aaa;
+
+            text-align: center;
+        }
+
+        .error {
+            padding: 15px;
+
+            border: 1px solid #c83737;
+            border-radius: 9px;
+
+            color: #ffaaaa;
+            background: #2b1414;
+        }
+
+        .loading {
+            padding: 18px;
+
+            color: #aaa;
+
+            text-align: center;
+        }
+
+        /* -------------------- */
+        /* Адаптивність         */
+        /* -------------------- */
+
+        @media (max-width: 850px) {
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-row {
+                flex-direction: column;
+            }
+
+            #searchButton {
+                width: 100%;
+            }
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>
+        Пошук у базі знань магазину «Сузір'я»
+    </h1>
+
+    <div class="subtitle">
+        Семантичний пошук і пошук за ключовими словами
+        по тих самих фрагментах колекції <b>docs/</b>.
+    </div>
+
+    <!-- Статус індексу -->
+
+    <div
+        id="status"
+        class="status status-loading"
+    >
+        Перевірка індексу...
+    </div>
+
+
+    <!-- Панель пошуку -->
+
+    <div class="search-panel">
+
+        <div class="search-row">
+
+            <input
+                id="query"
+                type="text"
+                placeholder="Наприклад: Як повернути гроші за товар?"
+                autocomplete="off"
+            >
+
+            <button
+                id="searchButton"
+                type="button"
+            >
+                Шукати
+            </button>
+
+        </div>
+
+
+        <div class="settings">
+
+            <!-- Режим -->
+
+            <div class="field">
+
+                <label for="mode">
+                    Режим
+                </label>
+
+                <select id="mode">
+
+                    <option value="both">
+                        обидва
+                    </option>
+
+                    <option value="semantic">
+                        семантичний
+                    </option>
+
+                    <option value="keyword">
+                        за ключовими словами
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Top-K -->
+
+            <div class="field">
+
+                <label for="topK">
+                    top-k
+                </label>
+
+                <input
+                    id="topK"
+                    class="small-input"
+                    type="number"
+                    value="5"
+                    min="1"
+                    max="20"
+                >
+
+            </div>
+
+
+            <!-- Threshold -->
+
+            <div class="field">
+
+                <label for="threshold">
+                    поріг
+                </label>
+
+                <input
+                    id="threshold"
+                    class="small-input"
+                    type="number"
+                    step="0.01"
+                    placeholder="немає"
+                >
+
+            </div>
+
+
+            <!-- Категорія -->
+
+            <div class="field">
+
+                <label for="category">
+                    категорія
+                </label>
+
+                <select id="category">
+
+                    <option value="">
+                        будь-яка
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Товар -->
+
+            <div class="field">
+
+                <label for="product">
+                    товар
+                </label>
+
+                <select id="product">
+
+                    <option value="">
+                        будь-який
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Аудиторія -->
+
+            <div class="field">
+
+                <label for="audience">
+                    аудиторія
+                </label>
+
+                <select id="audience">
+
+                    <option value="">
+                        будь-яка
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Статус -->
+
+            <div class="field">
+
+                <label for="documentStatus">
+                    статус
+                </label>
+
+                <select id="documentStatus">
+
+                    <option value="">
+                        будь-який
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Результати -->
+
+    <div class="results-grid">
+
+        <div
+            id="semanticColumn"
+            class="result-column"
+        >
+
+            <h2>
+                Семантичний
+            </h2>
+
+            <div
+                id="semanticTime"
+                class="time"
+            ></div>
+
+            <div id="semanticResults">
+
+                <div class="empty">
+                    Введіть запит і натисніть «Шукати».
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div
+            id="keywordColumn"
+            class="result-column"
+        >
+
+            <h2>
+                За ключовими словами
+            </h2>
+
+            <div
+                id="keywordTime"
+                class="time"
+            ></div>
+
+            <div id="keywordResults">
+
+                <div class="empty">
+                    Введіть запит і натисніть «Шукати».
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+    const queryInput =
+        document.getElementById("query");
+
+    const searchButton =
+        document.getElementById("searchButton");
+
+    const modeInput =
+        document.getElementById("mode");
+
+    const topKInput =
+        document.getElementById("topK");
+
+    const thresholdInput =
+        document.getElementById("threshold");
+
+    const categoryInput =
+        document.getElementById("category");
+
+    const productInput =
+        document.getElementById("product");
+
+    const audienceInput =
+        document.getElementById("audience");
+
+    const documentStatusInput =
+        document.getElementById("documentStatus");
+
+    const statusBox =
+        document.getElementById("status");
+
+    const semanticResults =
+        document.getElementById("semanticResults");
+
+    const keywordResults =
+        document.getElementById("keywordResults");
+
+    const semanticTime =
+        document.getElementById("semanticTime");
+
+    const keywordTime =
+        document.getElementById("keywordTime");
+
+    const semanticColumn =
+        document.getElementById("semanticColumn");
+
+    const keywordColumn =
+        document.getElementById("keywordColumn");
+
+
+    /*
+        Захист HTML від спеціальних символів.
+    */
+
+    function escapeHtml(value) {
+
+        const div =
+            document.createElement("div");
+
+        div.textContent =
+            value ?? "";
+
+        return div.innerHTML;
+    }
+
+
+    /*
+        Відображення метаданих.
+    */
+
+    function metadataHtml(metadata) {
+
+        if (!metadata) {
+            return "";
+        }
+
+        let html = "";
+
+        for (
+            const [key, value]
+            of Object.entries(metadata)
+        ) {
+
+            if (
+                value === null ||
+                value === undefined ||
+                value === ""
+            ) {
+                continue;
+            }
+
+            html += `
+                <span class="tag">
+                    ${escapeHtml(key)}:
+                    ${escapeHtml(String(value))}
+                </span>
+            `;
+        }
+
+        return html;
+    }
+
+
+    /*
+        Відображення одного результату.
+    */
+
+    function resultCard(hit, number) {
+
+        const score =
+            Number(hit.score ?? 0);
+
+        return `
+            <div class="result-card">
+
+                <div class="result-header">
+
+                    <div class="source">
+                        ${number}.
+                        ${escapeHtml(hit.source)}
+                    </div>
+
+                    <div class="score">
+                        score:
+                        ${score.toFixed(4)}
+                    </div>
+
+                </div>
+
+                <div class="metadata">
+                    ${metadataHtml(hit.metadata)}
+                </div>
+
+                <div class="text">
+                    ${escapeHtml(hit.text)}
+                </div>
+
+            </div>
+        `;
+    }
+
+
+    /*
+        Виведення списку результатів.
+    */
+
+    function showResults(
+        element,
+        hits
+    ) {
+
+        if (!hits || hits.length === 0) {
+
+            element.innerHTML = `
+                <div class="empty">
+                    Нічого не знайдено.
+                </div>
+            `;
+
+            return;
+        }
+
+        element.innerHTML =
+            hits
+                .map(
+                    (hit, index) =>
+                        resultCard(
+                            hit,
+                            index + 1
+                        )
+                )
+                .join("");
+    }
+
+
+    /*
+        Додавання значень у select.
+    */
+
+    function addOption(
+        select,
+        value
+    ) {
+
+        if (!value) {
+            return;
+        }
+
+        const exists =
+            Array.from(select.options)
+                .some(
+                    option =>
+                        option.value === value
+                );
+
+        if (exists) {
+            return;
+        }
+
+        const option =
+            document.createElement("option");
+
+        option.value = value;
+        option.textContent = value;
+
+        select.appendChild(option);
+    }
+
+
+    /*
+        Завантаження статусу індексу.
+    */
+
+    async function loadStatus() {
+
+        try {
+
+            const response =
+                await fetch("/api/status");
+
+            const data =
+                await response.json();
+
+            if (!data.ready) {
+
+                statusBox.className =
+                    "status status-error";
+
+                statusBox.textContent =
+                    data.message ||
+                    data.hint ||
+                    "Індекс не збудовано — виконайте python ingest.py";
+
+                searchButton.disabled = true;
+
+                return;
+            }
+
+            statusBox.className =
+                "status status-ok";
+
+            statusBox.textContent =
+                `Індекс готовий. Документів: ${data.documents}, ` +
+                `фрагментів: ${data.chunks}, модель: ${data.model}`;
+
+            searchButton.disabled = false;
+
+        }
+        catch (error) {
+
+            statusBox.className =
+                "status status-error";
+
+            statusBox.textContent =
+                "Не вдалося отримати стан застосунку.";
+
+            searchButton.disabled = true;
+        }
+    }
+
+
+    /*
+        Отримання фільтрів.
+    */
+
+    function getFilters() {
+
+        const filters = {};
+
+        if (categoryInput.value) {
+            filters.category =
+                categoryInput.value;
+        }
+
+        if (productInput.value) {
+            filters.product =
+                productInput.value;
+        }
+
+        if (audienceInput.value) {
+            filters.audience =
+                audienceInput.value;
+        }
+
+        if (documentStatusInput.value) {
+            filters.status =
+                documentStatusInput.value;
+        }
+
+        return filters;
+    }
+
+
+    /*
+        Пошук.
+    */
+
+    async function search() {
+
+        const query =
+            queryInput.value.trim();
+
+        if (!query) {
+
+            semanticResults.innerHTML = `
+                <div class="error">
+                    Введіть текст запиту.
+                </div>
+            `;
+
+            keywordResults.innerHTML = `
+                <div class="error">
+                    Введіть текст запиту.
+                </div>
+            `;
+
+            return;
+        }
+
+
+        const topK =
+            Number(topKInput.value);
+
+        if (
+            !Number.isInteger(topK) ||
+            topK < 1 ||
+            topK > 20
+        ) {
+
+            alert(
+                "top-k має бути від 1 до 20."
+            );
+
+            return;
+        }
+
+
+        let threshold = null;
+
+        if (
+            thresholdInput.value.trim() !== ""
+        ) {
+
+            threshold =
+                Number(thresholdInput.value);
+
+            if (
+                Number.isNaN(threshold)
+            ) {
+
+                alert(
+                    "Некоректне значення порога."
+                );
+
+                return;
+            }
+        }
+
+
+        const mode =
+            modeInput.value;
+
+
+        /*
+            Показуємо потрібні колонки.
+        */
+
+        semanticColumn.style.display =
+            mode === "keyword"
+                ? "none"
+                : "block";
+
+        keywordColumn.style.display =
+            mode === "semantic"
+                ? "none"
+                : "block";
+
+
+        semanticResults.innerHTML = `
+            <div class="loading">
+                Пошук...
+            </div>
+        `;
+
+        keywordResults.innerHTML = `
+            <div class="loading">
+                Пошук...
+            </div>
+        `;
+
+        semanticTime.textContent = "";
+        keywordTime.textContent = "";
+
+        searchButton.disabled = true;
+        searchButton.textContent = "Пошук...";
+
+
+        const payload = {
+
+            query: query,
+
+            mode: mode,
+
+            top_k: topK,
+
+            filters: getFilters(),
+
+            threshold: threshold
+        };
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/api/search",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify(
+                                payload
+                            )
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                const message =
+                    data.detail ||
+                    "Помилка пошуку.";
+
+                throw new Error(message);
+            }
+
+
+            /*
+                Семантичні результати.
+            */
+
+            if (
+                mode === "semantic" ||
+                mode === "both"
+            ) {
+
+                showResults(
+                    semanticResults,
+                    data.semantic
+                );
+
+                if (
+                    data.elapsed &&
+                    data.elapsed.semantic !== undefined
+                ) {
+
+                    semanticTime.textContent =
+                        "Час пошуку: " +
+                        (
+                            data.elapsed.semantic * 1000
+                        ).toFixed(2) +
+                        " мс";
+                }
+            }
+
+
+            /*
+                Keyword результати.
+            */
+
+            if (
+                mode === "keyword" ||
+                mode === "both"
+            ) {
+
+                showResults(
+                    keywordResults,
+                    data.keyword
+                );
+
+                if (
+                    data.elapsed &&
+                    data.elapsed.keyword !== undefined
+                ) {
+
+                    keywordTime.textContent =
+                        "Час пошуку: " +
+                        (
+                            data.elapsed.keyword * 1000
+                        ).toFixed(2) +
+                        " мс";
+                }
+            }
+
+        }
+        catch (error) {
+
+            const message =
+                escapeHtml(
+                    error.message
+                );
+
+            if (
+                mode === "semantic" ||
+                mode === "both"
+            ) {
+
+                semanticResults.innerHTML = `
+                    <div class="error">
+                        ${message}
+                    </div>
+                `;
+            }
+
+            if (
+                mode === "keyword" ||
+                mode === "both"
+            ) {
+
+                keywordResults.innerHTML = `
+                    <div class="error">
+                        ${message}
+                    </div>
+                `;
+            }
+        }
+        finally {
+
+            searchButton.disabled = false;
+            searchButton.textContent = "Шукати";
+        }
+    }
+
+
+    /*
+        Кнопка пошуку.
+    */
+
+    searchButton.addEventListener(
+        "click",
+        search
+    );
+
+
+    /*
+        Enter у полі запиту.
+    */
+
+    queryInput.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key === "Enter") {
+                search();
+            }
+        }
+    );
+
+
+    /*
+        Зміна режиму.
+    */
+
+    modeInput.addEventListener(
+        "change",
+        function() {
+
+            const mode =
+                modeInput.value;
+
+            semanticColumn.style.display =
+                mode === "keyword"
+                    ? "none"
+                    : "block";
+
+            keywordColumn.style.display =
+                mode === "semantic"
+                    ? "none"
+                    : "block";
+        }
+    );
+
+
+    /*
+        Початкова перевірка.
+    */
+
+    loadStatus();
+
+</script>
+
+</body>
+</html>
