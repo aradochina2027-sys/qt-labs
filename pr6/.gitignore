@@ -1,0 +1,19 @@
+# Віртуальне середовище
+.venv/
+venv/
+
+# API-ключі та локальні налаштування
+.env
+.env.*
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# IDE
+.vscode/
+.idea/
+
+# Системні файли
+.DS_Store
+Thumbs.db
