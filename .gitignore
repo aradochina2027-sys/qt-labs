@@ -30,3 +30,13 @@ Thumbs.db
 
 .env
 *.env
+
+# Практична робота 9
+pr9/.env
+pr9/.venv/
+pr9/runs/
+pr9/**/__pycache__/
+pr9/**/*.pyc
+pr9/eval/comparison_results*.json
+pr9/eval/comparison_summary.json
+pr9/eval/smoke_results.json
