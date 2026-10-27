@@ -1,0 +1,6 @@
+﻿"Request","Status","Provider","Model","Attempts","FirstToken","Total","Error"
+"d01","done","openai","gemini-3.5-flash-lite","1","2,678","2,99",
+"d02","done","openai","gemini-3.5-flash-lite","1","0,858","1,095",
+"d03","done","openai","gemini-3.5-flash-lite","1","1,152","1,471",
+"d04","done","openai","gemini-3.5-flash-lite","1","0,759","1,172",
+"d05","done","openai","gemini-3.5-flash-lite","1","0,718","0,976",
