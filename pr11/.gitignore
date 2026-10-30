@@ -1,0 +1,27 @@
+# Секрети та локальні налаштування
+.env
+.env.*
+!.env.example
+
+# Віртуальне середовище
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Журнали та стан застосунку
+logs/
+state/
+*.log
+
+# Результати тестових прогонів
+# Залишаються локально; висновки зберігаються у findings.md
+eval/replay-*.json
+
+# Службові файли
+.DS_Store
+Thumbs.db
