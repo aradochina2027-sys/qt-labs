@@ -1,0 +1,148 @@
+{
+ "meta": {
+  "created": "2026-10-31T02:00:51",
+  "label": "provider-readiness-v4",
+  "target": "drafts",
+  "config": {
+   "provider": "openai",
+   "fallback": "none",
+   "model": "gemini-3.6-flash",
+   "timeout": 30.0,
+   "idle_timeout": 8.0,
+   "total_timeout": 45.0,
+   "max_attempts": 3,
+   "max_concurrent": 1,
+   "prompt_version": "drafts-v4-89ee6a371cc8",
+   "temperature": 0.3,
+   "max_tokens": 2048,
+   "app_dir": "D:\\дз\\qt-labs\\qt-lab\\pr11",
+   "use_cache": false
+  },
+  "cases_file": "eval\\cases\\drafts.json",
+  "cases_sha256": "6ec0f7b50828aeb6",
+  "k": 1,
+  "judge": false,
+  "filters": {
+   "ids": "d01",
+   "kinds": null
+  },
+  "python": "3.13.5",
+  "duration_s": 2.9,
+  "partial": false
+ },
+ "cases": [
+  {
+   "id": "d01",
+   "kind": "normal",
+   "about": "повернення оформлено — усі факти мають потрапити в чернетку"
+  }
+ ],
+ "results": [
+  {
+   "id": "d01",
+   "kind": "normal",
+   "attempt": 1,
+   "output": {
+    "text": null,
+    "status": "error",
+    "error": {
+     "kind": "rate_limit",
+     "message": "Провайдер тимчасово обмежив запити."
+    },
+    "calls": [],
+    "elapsed": 2.851,
+    "statuses": [
+     {
+      "attempt": 1,
+      "provider": "openai",
+      "fallback": false,
+      "detail": "Генерація відповіді"
+     },
+     {
+      "attempt": 2,
+      "provider": "openai",
+      "fallback": false,
+      "detail": "Генерація відповіді"
+     },
+     {
+      "attempt": 3,
+      "provider": "openai",
+      "fallback": false,
+      "detail": "Генерація відповіді"
+     }
+    ]
+   },
+   "checks": [
+    {
+     "name": "contains_all",
+     "passed": false,
+     "detail": "відповіді немає: status=error, kind=rate_limit",
+     "data": null
+    },
+    {
+     "name": "contains_any",
+     "passed": false,
+     "detail": "відповіді немає: status=error, kind=rate_limit",
+     "data": null
+    },
+    {
+     "name": "contains_any",
+     "passed": false,
+     "detail": "відповіді немає: status=error, kind=rate_limit",
+     "data": null
+    },
+    {
+     "name": "not_contains",
+     "passed": false,
+     "detail": "відповіді немає: status=error, kind=rate_limit",
+     "data": null
+    },
+    {
+     "name": "language",
+     "passed": false,
+     "detail": "відповіді немає: status=error, kind=rate_limit",
+     "data": null
+    },
+    {
+     "name": "max_words",
+     "passed": false,
+     "detail": "відповіді немає: status=error, kind=rate_limit",
+     "data": null
+    },
+    {
+     "name": "numbers_from_facts",
+     "passed": false,
+     "detail": "відповіді немає: status=error, kind=rate_limit",
+     "data": null
+    }
+   ],
+   "passed": false
+  }
+ ],
+ "summary": {
+  "normal": {
+   "cases": 1,
+   "pass_all": 0,
+   "pass_any": 0,
+   "flaky": 0,
+   "attempts": 1,
+   "attempts_passed": 0,
+   "errors": 1,
+   "tokens_avg": null,
+   "cost_total": null,
+   "elapsed_p50": 2.851
+  },
+  "разом": {
+   "cases": 1,
+   "pass_all": 0,
+   "pass_any": 0,
+   "flaky": 0,
+   "attempts": 1,
+   "attempts_passed": 0,
+   "errors": 1,
+   "tokens_avg": null,
+   "cost_total": null,
+   "elapsed_p50": 2.851
+  }
+ }
+}

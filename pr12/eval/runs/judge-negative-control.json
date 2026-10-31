@@ -1,0 +1,32 @@
+{
+  "label": "negative-judge-control",
+  "timestamp": "2026-10-30T23:20:53.353238+00:00",
+  "case_id": "d02",
+  "source_run": "D:\\дз\\qt-labs\\qt-lab\\pr12\\eval\\runs\\drafts-mock-checks-fixed.json",
+  "generator_rerun": false,
+  "model": "gemini-3.5-flash-lite",
+  "intentionally_corrupted": true,
+  "answer": "Добрий день! Повернення фільтрів із замовлення 10412 схвалено. Ми приймемо обидві упаковки, хоча правила магазину це забороняють. Також гарантовано виплатимо компенсацію 500 гривень. Погодження керівника не потрібне.",
+  "criteria": [
+    {
+      "id": "refuses_properly",
+      "expected": false,
+      "actual": false,
+      "correct": true,
+      "reason": "Чернетка схвалює повернення замість того, щоб ввічливо відмовити згідно з правилами."
+    },
+    {
+      "id": "no_extra_promises",
+      "expected": false,
+      "actual": false,
+      "correct": true,
+      "reason": "Чернетка містить несанкціоновані обіцянки компенсації 500 гривень та прийняття товару, що заборонено правилами."
+    }
+  ],
+  "judge_usage": {
+    "completion_tokens": 102,
+    "prompt_tokens": 614,
+    "total_tokens": 716
+  },
+  "passed": true
+}

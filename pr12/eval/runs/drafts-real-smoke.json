@@ -1,0 +1,183 @@
+{
+ "meta": {
+  "created": "2026-10-31T00:41:04",
+  "label": "real-smoke",
+  "target": "drafts",
+  "config": {
+   "provider": "openai",
+   "fallback": "none",
+   "model": "gemini-3.6-flash",
+   "timeout": 30.0,
+   "idle_timeout": 8.0,
+   "total_timeout": 45.0,
+   "max_attempts": 3,
+   "max_concurrent": 1,
+   "prompt_version": "drafts-v3-84300d002509",
+   "temperature": 0.3,
+   "max_tokens": 600,
+   "app_dir": "D:\\дз\\qt-labs\\qt-lab\\pr11",
+   "use_cache": false
+  },
+  "cases_file": "eval\\cases\\drafts.json",
+  "cases_sha256": "6ec0f7b50828aeb6",
+  "k": 1,
+  "judge": true,
+  "filters": {
+   "ids": "d01",
+   "kinds": null
+  },
+  "python": "3.13.5",
+  "duration_s": 5.0,
+  "partial": false
+ },
+ "cases": [
+  {
+   "id": "d01",
+   "kind": "normal",
+   "about": "повернення оформлено — усі факти мають потрапити в чернетку"
+  }
+ ],
+ "results": [
+  {
+   "id": "d01",
+   "kind": "normal",
+   "attempt": 1,
+   "output": {
+    "text": "Добрий день!\n\nМи оформили заявку на повернення R-5001 для робота",
+    "status": "ok",
+    "error": null,
+    "calls": [],
+    "provider": "openai",
+    "model": "gemini-3.6-flash",
+    "usage": {
+     "completion_tokens": 22,
+     "prompt_tokens": 357,
+     "total_tokens": 953,
+     "completion_tokens_details": null,
+     "prompt_tokens_details": null
+    },
+    "cost": 0.00250275,
+    "cost_estimated": false,
+    "cached": false,
+    "fallback": false,
+    "attempts": 1,
+    "warnings": [],
+    "elapsed": 4.059
+   },
+   "checks": [
+    {
+     "name": "contains_all",
+     "passed": false,
+     "detail": "бракує: Промислова",
+     "data": null
+    },
+    {
+     "name": "contains_any",
+     "passed": false,
+     "detail": "немає жодного з: 13.10, 13 жовтня",
+     "data": null
+    },
+    {
+     "name": "contains_any",
+     "passed": false,
+     "detail": "немає жодного з: 7 робочих, семи робочих",
+     "data": null
+    },
+    {
+     "name": "not_contains",
+     "passed": true,
+     "detail": "",
+     "data": null
+    },
+    {
+     "name": "language",
+     "passed": false,
+     "detail": "кирилиця 98%; укр. літер 0; рос. літер 0",
+     "data": null
+    },
+    {
+     "name": "max_words",
+     "passed": true,
+     "detail": "11 слів, межа 120",
+     "data": null
+    },
+    {
+     "name": "numbers_from_facts",
+     "passed": true,
+     "detail": "перевірено 1 чисел",
+     "data": {
+      "found": [
+       "5001"
+      ],
+      "allowed": [
+       "1",
+       "10",
+       "10412",
+       "13",
+       "14",
+       "2026",
+       "29",
+       "5001",
+       "6",
+       "7",
+       "9"
+      ]
+     }
+    },
+    {
+     "name": "judge",
+     "passed": false,
+     "detail": "next_step: Чернетка обривається на пів слові і не містить подальших кроків для клієнта.",
+     "data": {
+      "criteria": [
+       {
+        "id": "tone",
+        "passed": true,
+        "reason": "Текст ввічливий і діловий, без докорів."
+       },
+       {
+        "id": "next_step",
+        "passed": false,
+        "reason": "Чернетка обривається на пів слові і не містить подальших кроків для клієнта."
+       }
+      ],
+      "overall": false,
+      "model": "gemini-3.5-flash-lite",
+      "usage": {
+       "completion_tokens": 81,
+       "prompt_tokens": 649,
+       "total_tokens": 730
+      }
+     }
+    }
+   ],
+   "passed": false
+  }
+ ],
+ "summary": {
+  "normal": {
+   "cases": 1,
+   "pass_all": 0,
+   "pass_any": 0,
+   "flaky": 0,
+   "attempts": 1,
+   "attempts_passed": 0,
+   "errors": 0,
+   "tokens_avg": 379,
+   "cost_total": 0.002503,
+   "elapsed_p50": 4.059
+  },
+  "разом": {
+   "cases": 1,
+   "pass_all": 0,
+   "pass_any": 0,
+   "flaky": 0,
+   "attempts": 1,
+   "attempts_passed": 0,
+   "errors": 0,
+   "tokens_avg": 379,
+   "cost_total": 0.002503,
+   "elapsed_p50": 4.059
+  }
+ }
+}
